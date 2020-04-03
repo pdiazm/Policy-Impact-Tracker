@@ -1,22 +1,29 @@
-# Hansard cleaner script created by Matt Chaib (mattchaib.com)
+# Hansard cleaner script created by Matt Chaib (original found at: mattchaib.com)
 # Modified by Paulino Diaz
 
 # FUNCTIONS ---------------------------------------------------------------
 
 create_header_table <- function(hansard_plaintext) {
-  tibble(headers = unlist(str_extract_all(hansard_plaintext, "\n[^\n\r]*\r"))) %>% # pull out all headers
-    mutate(possible_name = str_length(headers) < 150 & !str_detect(headers, "\r\n\r\n")) %>% # mark those short enough to be a name
+  # pull out all headers
+  tibble(headers = unlist(str_extract_all(hansard_plaintext, "\n[^\n\r]*\r"))) %>%
+    # mark those short enough to be a name
+    mutate(possible_name = str_length(headers) < 150 & !str_detect(headers, "\r\n\r\n")) %>% 
     filter(possible_name)
 }
 
 condense_header_table <- function(header_table) {
   header_table %>% 
-    mutate(headers = str_sub(headers, start = 2, end = -2), # chop off escape characters
-           first_word = str_sub(str_extract(headers, "[a-zA-Z]*\\W"), 1, -2), # pull out first word of header
-           first_two_words = str_sub(str_extract(headers, "[a-zA-Z]*\\W[a-zA-Z'-]*"), 1, -1)) %>% # pull out first two words of header
+    # chop off escape characters
+    mutate(headers = str_sub(headers, start = 2, end = -2),
+           # pull out first word of header
+           first_word = str_sub(str_extract(headers, "[a-zA-Z]*\\W"), 1, -2), 
+           # pull out first two words of header
+           first_two_words = str_sub(str_extract(headers, "[a-zA-Z]*\\W[a-zA-Z'-]*"), 1, -1)) %>% 
     group_by(first_word) %>% 
     nest() %>%
-    mutate(n_obs = map_int(data, nrow), first_two_word = map(data, "first_two_words"), entire_title = map(data, "headers")) 
+    mutate(n_obs = map_int(data, nrow), 
+           first_two_word = map(data, "first_two_words"), 
+           entire_title = map(data, "headers")) 
 }
 
 peers_from_condensed_table <- function(c_ht) {
@@ -43,9 +50,12 @@ mark_peer_metadata <- function(peers_id) {
 extract_base_names <- function(peers_id) {
   peers_id %>% 
     mutate(name = case_when(
-      awkward ~ str_sub(str_extract(entire_title, "[a-zA-Z ',\\-]+"), 1, -2), # if two sets of brackets, get name before brackets
-      !awkward & contains_party ~ str_sub(str_extract(entire_title, "[a-zA-Z ',\\-]+"), 1, -2), # if party, ignore party
-      !awkward & !contains_party ~ entire_title # if just a name, just use the name
+      # if two sets of brackets, get name before brackets
+      awkward ~ str_sub(str_extract(entire_title, "[a-zA-Z ',\\-]+"), 1, -2), 
+      # if party, ignore party
+      !awkward & contains_party ~ str_sub(str_extract(entire_title, "[a-zA-Z ',\\-]+"), 1, -2), 
+      # if just a name, just use the name
+      !awkward & !contains_party ~ entire_title 
     ))
 }
 
@@ -88,8 +98,8 @@ bind_text <- function(hansard_plaintext, peers, remove_exclamations=T) {
   peer_headers <- unique(peers$entire_title) # all headers corresponding to a peer
   
   # Using the headers assigned to peers and their locations in the text,
-  # assume that all the text between these headers belongs to a single speech for that peer, and
-  # assign it to that Lord.
+  # assume that all the text between these headers belongs to a single speech for that peer,
+  # and assign it to that Lord.
   peers <- distinct(peers)
   
   text <- loc %>%
