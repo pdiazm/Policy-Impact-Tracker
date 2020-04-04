@@ -1,0 +1,30 @@
+---
+title: "Impact Tracker"
+author: "Paulino Diaz"
+date: "12/03/2019"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+library(tidyverse)
+library(here)
+library(tidytext) 
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r download}
+tax_ptxt <- read_file(here("Taxation of Low-income Families 2019-01-16.txt"))
+tax_hansard <- read_hansards(tax_ptxt, include_key_as_metadata = T)
+
+edu_ptx <- read_file(here("Post-18 Education and Funding Review 2019-07-02.txt"))
+edu_hansard <- read_hansards(edu_ptx)
+
+```
+
+```{r search}
+oecd_mentions1 <- edu_hansard[[1]] %>%
+  mutate(oecd_mention = grepl("OECD", text, fixed = T))
+
+oecd_mentions2 <- as.data.frame(tax_hansard[1]) %>%
+  mutate(oecd_mention = grepl("OECD", text, fixed = T))
+```
