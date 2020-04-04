@@ -1,7 +1,7 @@
 # OECD Policy-Impact-Tracker
 ## Monitoring tool for tracking the legislative agenda in the United Kingdom
 This repository is meant to act as a proof of concept for the development of a more robust policy impact tracker for the OECD. It currently has two parts:
-1. The **first** is the an R script (labeled Plain_Text.r) containing the functions to create a text processor which takes plain text files as input and returns clean and formatted text data ready for analysis.
+1. The **first** is the an R script (labeled [PlainText_Script.R](./PlainText_Script.R)) containing the functions to create a text processor which takes plain text files as input and returns clean and formatted text data ready for analysis.
 2. The **second** is an rmd file which uses the functions in the script to identify mentions of the OECD in Hansard transcripts.
 
 To build a more robust monitoring tool two additional pieces need to be developed and integrated:
