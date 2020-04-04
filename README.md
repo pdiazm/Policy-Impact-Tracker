@@ -2,7 +2,7 @@
 ## Monitoring tool for tracking the legislative agenda in the United Kingdom
 This repository is meant to act as a proof of concept for the development of a more robust policy impact tracker for the OECD. It currently has two parts:
 1. The **first** is the an R script (labeled [PlainText_Script.R](./PlainText_Script.R)) containing the functions to create a text processor which takes plain text files as input and returns clean and formatted text data ready for analysis.
-2. The **second** is an rmd file (labeled [Policy Impact Tracker.Rmd](./Policy-Impact-Tracker.Rmd)) which uses the functions in the script to identify mentions of the OECD in Hansard transcripts.
+2. The **second** is an rmd file (labeled [Policy Impact Tracker.Rmd](./Policy_Impact_Tracker.Rmd)) which uses the functions in the script to identify mentions of the OECD in Hansard transcripts.
 
 To build a more robust monitoring tool two additional pieces need to be developed and integrated:
 1. The website TheyWorkForYou provides an API that allows you to download all new available Hansards on a daily basis. By integrating this API to the rmd file, one would simply need to run the rmd file once a day to retrieve the new Hansard transcripts and scrape them for OECD mentions.
